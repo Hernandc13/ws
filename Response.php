@@ -52,7 +52,7 @@
   </div>
   <div class="card-body">
 
-    <a href="https://tmmgt.safetylearning.mx/" class="btn btn-success">Iniciar Sesión</a>
+    <a href="https://tmmgt.safetylearning.mx/course/view.php?id=4" class="btn btn-success">Iniciar Sesión</a>
   </div>
   <div class="card-footer text-muted">
     Toyota Guanajuato
