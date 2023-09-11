@@ -13,7 +13,30 @@ $firstname=$_GET['firstname'];
 $email=$_GET['email'];
 		//Se valida que toda la información llegue para poder hacer la petición a base de datos.
             if(isset($username) and isset($pass) and isset($lastname) and isset($firstname) and isset($email)){
-	            $sql = "select * from mdl_user where username='$username' or email='$email'";
+				$sqlValidaCalificacion = "SELECT usr.email, usr.id ,gi.itemmodule AS 'tipo_actividad',cs.section AS 'numero_seccion',cs.name as 'nombre_seccion'
+				, FROM_UNIXTIME(gg.timemodified,'%M %D, %Y') AS 'fecha' ,ROUND(gg.rawgrademax,0) as 'peso'
+				,ROUND(gg.finalgrade ,0) as 'calificacion' ,cm.id as 'link', gi.itemname AS 'actividad'
+				,if (gi.locked > 0,'Bloqueda' , 'Activa') as 'estatus' FROM mdl_course AS c
+				LEFT JOIN mdl_course_sections AS cs ON cs.course = c.id AND cs.section > 0 AND cs.section <=14 
+				LEFT JOIN mdl_course_modules AS cm ON cm.course = c.id AND cm.section = cs.id
+				LEFT JOIN mdl_assign AS asg ON asg.id = cm.instance
+				JOIN mdl_grade_items AS gi ON gi.iteminstance = cm.instance AND gi.gradetype = 1 AND gi.hidden != 1 AND gi.courseid = c.id AND cm.course = c.id AND cm.section = cs.id
+				JOIN mdl_grade_grades as gg on gg.itemid=gi.id join mdl_user as usr on usr.id=gg.userid
+				WHERE usr.email='$username' and c.id =4;";
+               $resultcalf = mysqli_query($conexion, $sqlValidaCalificacion);
+			   if(mysqli_num_rows($resultcalf)>0)
+			   {
+				if($row = $resultcalf->fetch_assoc()) {
+					$cal=$row["calificacion"];
+					if($cal>=8 and $cal<=10){
+						header("Location:./Response.php?res=Ya realizaste la evaluación!&credenciales=<b style='color:red;'>Tu calificación fue de : $cal </b> espera que aprueben tu solicitud.");
+					}else{
+						header("Location:./Response.php?res=Ya hiciste la evaluacion pero tu calificación no es aprobatoria.");
+					}
+				}
+
+			   }else{
+				$sql = "select * from mdl_user where username='$username' or email='$email'";
 	            $result = mysqli_query($conexion, $sql);
 	             if(mysqli_num_rows($result)>0)
 	            {
@@ -51,15 +74,10 @@ $email=$_GET['email'];
 		 if(mysqli_num_rows($result)>0)
 		{
 			if($row = $result->fetch_assoc()) {
-		//Si el usuario ya esta registrado en el curso solo le manda su usuario y que ingrese a su cuenta
-		//suponiendo que si ya esta registrado ya sabe su contraseña.
-		//echo "EL USUARIO YA ESTA REGISTRADO EN EL CURSO";
-		//echo "<h2>Ingresamoodle usa la contraseña de tu usuario para iniciar sesión.</h2>";
 		$usrre=$row["username"];
-		//echo "<h2>".$row["password"]."</h2>";
-		//echo "<button><a href='https://tmmgt.safetylearning.mx/'>Inicia Sesión</a></button>";
-		header("Location:./Response.php?res=El usuario se registro correctamente,da click en el botón e inicia sesión tu usuario es: $usrre.");
-			}
+		header("Location:./Response.php?res=El usuario ya esta registrado!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contrseña es : <b style='color:red;'>$pass</b>");
+
+	}
 		}
 			
 	 }else{
@@ -80,14 +98,8 @@ $email=$_GET['email'];
 		 if(mysqli_num_rows($result)>0)
 		{
 			if($row = $result->fetch_assoc()) {
-		//Si el usuario ya esta registrado en el curso solo le manda su usuario y que ingrese a su cuenta
-		//suponiendo que si ya esta registrado ya sabe su contraseña.
-		//echo "EL USUARIO YA ESTA REGISTRADO EN EL CURSO";
-		//echo "<h2>Ingresamoodle usa la contraseña de tu usuario para iniciar sesión.</h2>";
 		$usrre=$row["username"];
-		//echo "<h2>".$row["password"]."</h2>";
-		//echo "<button><a href='https://tmmgt.safetylearning.mx/'>Inicia Sesión</a></button>";
-		header("Location:./Response.php?res=El usuario se registro correctamente,da click en el botón e inicia sesión tu usuario es: $usrre.");
+		header("Location:./Response.php?res=Se registro correctamente!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contrseña es : <b style='color:red;'>$pass</b>");
 			}
 		}
 			} else {
@@ -95,7 +107,6 @@ $email=$_GET['email'];
 			}
 	 }
 		}
-		header("Location:./Response.php?res=El usuario ya esta registrado, da click en el botón e inicia sesión.");
 	 }else{
 		$sqlinsert = "INSERT INTO mdl_user (auth,username,password,lastname,firstname,email,confirmed,mnethostid,city,country,lang,timezone,maildisplay)
 VALUES('manual','$username','$passHash','$lastname','$firstname','$email','1','1','mexico','mx','es_mx','America/Monterrey','1');";
@@ -153,14 +164,8 @@ VALUES('manual','$username','$passHash','$lastname','$firstname','$email','1','1
 		 if(mysqli_num_rows($result)>0)
 		{
 			if($row = $result->fetch_assoc()) {
-		//Si el usuario ya esta registrado en el curso solo le manda su usuario y que ingrese a su cuenta
-		//suponiendo que si ya esta registrado ya sabe su contraseña.
-		//echo "EL USUARIO YA ESTA REGISTRADO EN EL CURSO";
-		//echo "<h2>Ingresamoodle usa la contraseña de tu usuario para iniciar sesión.</h2>";
-        $usrre=$row["username"];
-		//echo "<h2>".$row["password"]."</h2>";
-		//echo "<button><a href='https://tmmgt.safetylearning.mx/'>Inicia Sesión</a></button>";
-		header("Location:./Response.php?res=El usuario se registro correctamente,da click en el botón e inicia sesión tu usuario es: $usrre y tu contraseña es: $pass");
+				$usrre=$row["username"];
+		header("Location:./Response.php?res=Se registro al usuario correctamente!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contrseña es : <b style='color:red;'>$pass</b>");
 			}
 		}
 			} else {
@@ -174,6 +179,9 @@ VALUES('manual','$username','$passHash','$lastname','$firstname','$email','1','1
 	}
 	$conexion->close();
 	 }
+			   }
+
+	   
 }else{
 	header("Location:./Response.php?error=No llego la información.");
 }
