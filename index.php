@@ -29,9 +29,9 @@ $email=$_GET['email'];
 				if($row = $resultcalf->fetch_assoc()) {
 					$cal=$row["calificacion"];
 					if($cal>=8 and $cal<=10){
-						header("Location:./Response.php?res=Ya realizaste la evaluación!&credenciales=<b style='color:red;'>Tu calificación fue de : $cal </b> espera que aprueben tu solicitud.");
+						header("Location:./Response.php?res=Ya realizaste la evaluación!&credenciales=<b style='color:red;'>Tu calificación fue: $cal </b> espera que aprueben tu solicitud.");
 					}else{
-						header("Location:./Response.php?res=Ya hiciste la evaluacion pero tu calificación no es aprobatoria.");
+						header("Location:./Response.php?res=Ya hiciste la evaluación pero tu calificación no es aprobatoria.");
 					}
 				}
 
@@ -75,7 +75,7 @@ $email=$_GET['email'];
 		{
 			if($row = $result->fetch_assoc()) {
 		$usrre=$row["username"];
-		header("Location:./Response.php?res=El usuario ya esta registrado!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contrseña es : <b style='color:red;'>$pass</b>");
+		header("Location:./Response.php?res=El usuario ya esta registrado!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b>");
 
 	}
 		}
@@ -99,7 +99,7 @@ $email=$_GET['email'];
 		{
 			if($row = $result->fetch_assoc()) {
 		$usrre=$row["username"];
-		header("Location:./Response.php?res=Se registro correctamente!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contrseña es : <b style='color:red;'>$pass</b>");
+		header("Location:./Response.php?res=Se registro correctamente!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contraseña es : <b style='color:red;'>$pass</b>");
 			}
 		}
 			} else {
@@ -165,7 +165,7 @@ VALUES('manual','$username','$passHash','$lastname','$firstname','$email','1','1
 		{
 			if($row = $result->fetch_assoc()) {
 				$usrre=$row["username"];
-		header("Location:./Response.php?res=Se registro al usuario correctamente!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contrseña es : <b style='color:red;'>$pass</b>");
+		header("Location:./Response.php?res=Se registro al usuario correctamente!&credenciales=Da click en el botón y realiza la evaluación tu usuario es: <b style='color:red;'> $usrre </b> y tu contraseña es : <b style='color:red;'>$pass</b>");
 			}
 		}
 			} else {
